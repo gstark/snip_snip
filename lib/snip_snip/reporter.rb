@@ -8,12 +8,12 @@ module SnipSnip
       self.results = find_results
     end
 
-    def report(controller)
+    def report(message)
       return if results.empty?
 
       backtrace_cleaner = Registry.backtrace_cleaner
 
-      SnipSnip.logger.info("#{controller.controller_name}##{controller.action_name}")
+      SnipSnip.logger.info(message)
       results.sort_by(&:class_name).each do |result|
         SnipSnip.logger.info("  #{result.class_name} #{result.primary_key}: #{result.unused.sort.join(', ')}")
 
