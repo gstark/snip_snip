@@ -1,6 +1,6 @@
 module SnipSnip
   class Reporter
-    Result = Struct.new(:class_name, :primary_key, :unused, :stack)
+    Result = Struct.new(:class_name, :primary_key, :used, :unused, :stack)
 
     attr_accessor :results
 
@@ -15,7 +15,8 @@ module SnipSnip
 
       SnipSnip.logger.info(message)
       results.sort_by(&:class_name).each do |result|
-        SnipSnip.logger.info("  #{result.class_name} #{result.primary_key}: #{result.unused.sort.join(', ')}")
+        hash = { class: result.class_name, key: result.primary_key, unused: result.unused, used: result.used }
+        SnipSnip.logger.info("  #{hash.inspect}")
 
         backtrace_cleaner.clean(result.stack).each do |stack|
           SnipSnip.logger.info("    #{stack}")
@@ -41,7 +42,7 @@ module SnipSnip
         next if unused.empty?
 
         primary_key = model.class.primary_key
-        results << Result.new(model.class.name, model.send(primary_key), unused, stack)
+        results << Result.new(model.class.name, model.send(primary_key), accessed, unused, stack)
       end
     end
   end
