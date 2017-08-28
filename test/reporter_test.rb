@@ -3,7 +3,7 @@ require 'test_helper'
 module SnipSnip
   class ReporterTest < ActiveSupport::TestCase
     FakeController = Struct.new(:controller_name, :action_name)
-    FakeResult = Struct.new(:report)
+    FakeResult = Struct.new(:class_name, :primary_key, :unused, :stack)
 
     test '#initialize' do
       first_user, second_user = [User.first, User.second]
@@ -23,9 +23,9 @@ module SnipSnip
 
     test '#report some' do
       reporter = Reporter.new
-      reporter.results = [FakeResult.new('1'), FakeResult.new('2')]
+      reporter.results = [FakeResult.new('1', 'a', ['unused1'], ['stack1']), FakeResult.new('2', 'a', ['unused2'], ['stack2'])]
 
-      expected = ['c#a', '  1', '  2']
+      expected = ["c#a", "  1 a: unused1", "  2 a: unused2"]
       assert_logged(expected) { reporter.report(FakeController.new('c', 'a')) }
     end
   end

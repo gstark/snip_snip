@@ -1,22 +1,26 @@
 module SnipSnip
   class Registry
-    attr_accessor :records
+    Entry = Struct.new(:model, :stack)
+
+    attr_accessor :entries
+    attr_accessor :backtrace_cleaner
 
     def initialize
+      self.backtrace_cleaner = Rails.backtrace_cleaner
       clear
     end
 
     def clear
-      self.records = []
+      self.entries = []
     end
 
-    def each_record(&block)
-      return to_enum(:each_record) unless block_given?
-      records.each(&block)
+    def each_entry(&block)
+      return to_enum(:each_entry) unless block_given?
+      entries.each(&block)
     end
 
-    def register(record)
-      records << record
+    def register(entry, stack)
+      entries << { model: entry, stack: stack }
     end
 
     class << self

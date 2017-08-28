@@ -7,7 +7,7 @@ module SnipSnip
       end
 
       ActiveSupport.on_load(:active_record) do
-        after_find { Registry.register(self) unless Filter.filtered?(self) }
+        after_find { Registry.register(self, Kernel.caller) unless Filter.filtered?(self) }
       end
     end
   end

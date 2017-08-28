@@ -9,7 +9,9 @@ class IntegrationTest < ActionDispatch::IntegrationTest
     expected = [
       'users#action2',
       '  User 1: created_at, first_name, id, last_name, updated_at',
-      '  User 2: created_at, first_name, id, last_name, updated_at'
+      "    app/controllers/users_controller.rb:10:in `action2'",
+      '  User 2: created_at, first_name, id, last_name, updated_at',
+      "    app/controllers/users_controller.rb:10:in `action2'"
     ]
     assert_logged(expected) { get action2_path }
   end

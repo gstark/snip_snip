@@ -4,36 +4,36 @@ module SnipSnip
   class RegistryTest < ActiveSupport::TestCase
     test '#clear' do
       registry = Registry.new
-      registry.records = [:a, :b, :c]
+      registry.entries = [ {model: :a }, {model: :b}, {model: :c}]
 
       registry.clear
 
-      assert_empty registry.records
+      assert_empty registry.entries
     end
 
-    test '#each_record no block' do
+    test '#each_entry no block' do
       expected = [:a, :b, :c]
       registry = Registry.new
-      registry.records = expected
+      registry.entries = expected
 
       actual = []
-      registry.each_record { |record| actual << record }
+      registry.each_entry { |entry| actual << entry }
 
       assert_equal expected, actual
     end
 
-    test '#each_record block' do
+    test '#each_entry block' do
       registry = Registry.new
 
-      assert_kind_of Enumerator, registry.each_record
+      assert_kind_of Enumerator, registry.each_entry
     end
 
     test '#register' do
       registry = Registry.new
 
-      registry.register(:a)
+      registry.register(:a, [])
 
-      assert_equal [:a], registry.records
+      assert_equal [{ model: :a, stack: [] }], registry.entries
     end
 
     test '::instance' do
